@@ -81,10 +81,22 @@ class User implements UserInterface
      */
     private $likes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="follower", orphanRemoval=true)
+     */
+    private $followeds;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="followed", orphanRemoval=true)
+     */
+    private $followers;
+
     public function __construct()
     {
         $this->recipes = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->followeds = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -289,6 +301,66 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($like->getAuthor() === $this) {
                 $like->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Follow[]
+     */
+    public function getFolloweds(): Collection
+    {
+        return $this->followeds;
+    }
+
+    public function addFollowed(Follow $followed): self
+    {
+        if (!$this->followeds->contains($followed)) {
+            $this->followeds[] = $followed;
+            $followed->setFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowed(Follow $followed): self
+    {
+        if ($this->followeds->removeElement($followed)) {
+            // set the owning side to null (unless already changed)
+            if ($followed->getFollower() === $this) {
+                $followed->setFollower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Follow[]
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(Follow $follower): self
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers[] = $follower;
+            $follower->setFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(Follow $follower): self
+    {
+        if ($this->followers->removeElement($follower)) {
+            // set the owning side to null (unless already changed)
+            if ($follower->getFollowed() === $this) {
+                $follower->setFollowed(null);
             }
         }
 

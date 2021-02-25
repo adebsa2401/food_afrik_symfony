@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +13,7 @@ use App\Traits\Timestampable;
  * @ORM\Entity(repositoryClass=RecipeRepository::class)
  * @ORM\Table(name="recipes")
  * @ORM\HasLifecycleCallbacks
+ * @ApiResource
  */
 class Recipe
 {
