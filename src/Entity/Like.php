@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LikeRepository;
+use App\Traits\HasUuid;
 use Doctrine\ORM\Mapping as ORM;
 use App\Traits\Timestampable;
 
@@ -14,13 +15,7 @@ use App\Traits\Timestampable;
 class Like
 {
     use Timestampable;
-    
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use HasUuid;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="likes")
@@ -33,11 +28,6 @@ class Like
      * @ORM\JoinColumn(nullable=false)
      */
     private $recipe;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getAuthor(): ?User
     {

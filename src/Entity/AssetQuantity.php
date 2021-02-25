@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AssetQuantityRepository;
+use App\Traits\HasUuid;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,12 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AssetQuantity
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use HasUuid;
 
     /**
      * @ORM\ManyToOne(targetEntity=Recipe::class, inversedBy="assetQuantities")
@@ -44,11 +40,6 @@ class AssetQuantity
      * @ORM\Column(type="text", nullable=true)
      */
     private $info;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getRecipe(): ?Recipe
     {

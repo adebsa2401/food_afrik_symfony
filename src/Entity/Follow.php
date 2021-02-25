@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FollowRepository;
+use App\Traits\HasUuid;
 use App\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,16 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Follow
 {
     use Timestampable;
+    use HasUuid;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="followed")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="followeds")
      * @ORM\JoinColumn(nullable=false)
      */
     private $follower;
@@ -34,11 +29,6 @@ class Follow
      * @ORM\JoinColumn(nullable=false)
      */
     private $followed;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getFollower(): ?User
     {

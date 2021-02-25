@@ -3,27 +3,24 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Traits\HasUuid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Traits\Timestampable;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="users")
  * @ORM\HasLifecycleCallbacks
+ * @ApiResource
  */
 class User implements UserInterface
 {
     use Timestampable;
-    
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use HasUuid;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -97,11 +94,6 @@ class User implements UserInterface
         $this->likes = new ArrayCollection();
         $this->followeds = new ArrayCollection();
         $this->followers = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     /**

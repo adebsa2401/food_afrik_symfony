@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AssetRepository;
+use App\Traits\HasUuid;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,12 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Asset
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use HasUuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -29,11 +25,6 @@ class Asset
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getName(): ?string
     {

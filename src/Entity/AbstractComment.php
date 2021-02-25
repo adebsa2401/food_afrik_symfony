@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Traits\HasUuid;
 use App\Traits\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,13 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractComment
 {
     use Timestampable;
-
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
+    use HasUuid;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
@@ -51,11 +46,6 @@ abstract class AbstractComment
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getAuthor(): ?User

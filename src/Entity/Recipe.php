@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RecipeRepository;
+use App\Traits\HasUuid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,13 +19,7 @@ use App\Traits\Timestampable;
 class Recipe
 {
     use Timestampable;
-    
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use HasUuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -62,11 +57,6 @@ class Recipe
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->assetQuantities = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getName(): ?string
