@@ -50,28 +50,31 @@ class Recipe
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="recipes")
      * @ORM\JoinColumn(nullable=false)
-     * @ApiProperty(
-     *     writable=false
-     * )
-     */
-    private $author;
-
-    /**
-     * @ORM\OneToMany(targetEntity=RecipeComment::class, mappedBy="recipe", orphanRemoval=true)
      * @ApiProperty(writable = false)
      */
-    private $comments = [];
+    private $author;
 
     /**
      * @ORM\OneToMany(targetEntity=Like::class, mappedBy="recipe", orphanRemoval=true)
      * @ApiProperty(writable = false)
      */
-    private $likes = [];
+    private $likes;
 
     /**
      * @ORM\OneToMany(targetEntity=AssetQuantity::class, mappedBy="recipe")
      */
-    private $assetQuantities = [];
+    private $assetQuantities;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" = true})
+     */
+    private $commentable;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="recipe", orphanRemoval=true)
+     * @ApiProperty(writable = false)
+     */
+    private $comments;
 
     public function __construct()
     {
@@ -112,36 +115,6 @@ class Recipe
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|RecipeComment[]
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
-
-    public function addComment(RecipeComment $comment): self
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
-            $comment->setRecipe($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(RecipeComment $comment): self
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getRecipe() === $this) {
-                $comment->setRecipe(null);
-            }
-        }
 
         return $this;
     }
@@ -200,6 +173,48 @@ class Recipe
             // set the owning side to null (unless already changed)
             if ($assetQuantity->getRecipe() === $this) {
                 $assetQuantity->setRecipe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCommentable(): ?bool
+    {
+        return $this->commentable;
+    }
+
+    public function setCommentable(bool $commentable): self
+    {
+        $this->commentable = $commentable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getRecipe() === $this) {
+                $comment->setRecipe(null);
             }
         }
 

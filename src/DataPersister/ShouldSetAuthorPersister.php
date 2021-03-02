@@ -2,11 +2,12 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use App\Entity\Comment;
 use App\Entity\Recipe;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
-final class RecipeDataPersister implements ContextAwareDataPersisterInterface {
+final class ShouldSetAuthorPersister implements ContextAwareDataPersisterInterface {
     private $em;
     private $security;
 
@@ -16,7 +17,8 @@ final class RecipeDataPersister implements ContextAwareDataPersisterInterface {
     }
 
     public function supports($data, array $context = []): bool {
-        return $data instanceof Recipe;
+        return $data instanceof Recipe ||
+            $data instanceof Comment;
     }
 
     public function persist($data, array $context = []) {
