@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=FollowRepository::class)
  * @ORM\Table(name="follows")
- * @ApiResource
  */
 class Follow
 {

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Repository\CommentRepository;
@@ -14,20 +15,22 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  * @ORM\Table(name="comments")
+ * @ORM\HasLifecycleCallbacks
  * @ApiResource(
  *     itemOperations = {
  *         "get",
  *         "put" = {
- *             "security" = "object.author === user"
+ *             "security" = "object.getAuthor() === user"
  *         },
  *         "delete" = {
- *             "security" = "object.author === user"
+ *             "security" = "object.getAuthor() === user"
  *         }
  *     },
  *     collectionOperations = {
  *         "get",
  *         "post" = {
- *             "security" = "is_granted('ROLE_USER') && object.recipe.commentable"
+ *             "security" = "is_granted('ROLE_USER')",
+ *             "security_post_denormalize" = "object.getRecipe().getCommentable()"
  *         }
  *     }
  * )
@@ -56,6 +59,7 @@ class Comment
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="parentComment")
      * @ApiProperty(writable = false)
+     * @ApiSubresource
      */
     private $childComments;
 

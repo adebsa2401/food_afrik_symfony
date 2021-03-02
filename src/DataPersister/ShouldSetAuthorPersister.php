@@ -24,6 +24,7 @@ final class ShouldSetAuthorPersister implements ContextAwareDataPersisterInterfa
     public function persist($data, array $context = []) {
         $data->setAuthor($this->security->getUser());
         $this->em->persist($data);
+        $this->em->flush();
         return $data;
     }
 

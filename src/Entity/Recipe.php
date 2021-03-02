@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RecipeRepository;
 use App\Traits\HasUuid;
@@ -19,10 +20,10 @@ use App\Traits\Timestampable;
  *     itemOperations = {
  *         "get",
  *         "put" = {
- *             "security" = "object.author === user"
+ *             "security" = "object.getAuthor() === user"
  *         },
  *         "delete" = {
- *             "security" = "object.author === user"
+ *             "security" = "object.getAuthor() === user"
  *         }
  *     },
  *     collectionOperations = {
@@ -73,6 +74,7 @@ class Recipe
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="recipe", orphanRemoval=true)
      * @ApiProperty(writable = false)
+     * @ApiSubresource
      */
     private $comments;
 

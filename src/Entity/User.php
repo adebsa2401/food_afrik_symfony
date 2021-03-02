@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\UserRepository;
 use App\Traits\HasUuid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -89,29 +90,31 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="author", orphanRemoval=true)
      * @ApiProperty(writable = false)
+     * @ApiSubresource
      */
-    private $recipes = [];
+    private $recipes;
 
     /**
      * @ORM\OneToMany(targetEntity=Like::class, mappedBy="author", orphanRemoval=true)
      * @ApiProperty(writable = false)
      */
-    private $likes = [];
+    private $likes;
 
     /**
      * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="follower", orphanRemoval=true)
      * @ApiProperty(writable = false)
      */
-    private $followeds = [];
+    private $followeds;
 
     /**
      * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="followed", orphanRemoval=true)
      * @ApiProperty(writable = false)
      */
-    private $followers = [];
+    private $followers;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author", orphanRemoval=true)
+     * @ApiSubresource
      */
     private $comments;
 

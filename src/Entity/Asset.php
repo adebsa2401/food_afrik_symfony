@@ -10,7 +10,17 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=AssetRepository::class)
  * @ORM\Table(name="assets")
- * @ApiResource
+ * @ApiResource(
+ *     itemOperations = {
+ *         "get"
+ *     },
+ *     collectionOperations = {
+ *         "get",
+ *         "post" = {
+ *             "security" = "is_granted('ROLE_USER')"
+ *         }
+ *     }
+ * )
  */
 class Asset
 {
