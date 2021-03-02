@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RecipeRepository;
 use App\Traits\HasUuid;
@@ -14,12 +15,27 @@ use App\Traits\Timestampable;
  * @ORM\Entity(repositoryClass=RecipeRepository::class)
  * @ORM\Table(name="recipes")
  * @ORM\HasLifecycleCallbacks
- * @ApiResource
+ * @ApiResource(
+ *     itemOperations = {
+ *         "get",
+ *         "put" = {
+ *             "security" = "object.author === user"
+ *         },
+ *         "delete" = {
+ *             "security" = "object.author === user"
+ *         }
+ *     },
+ *     collectionOperations = {
+ *         "get",
+ *         "post" = {
+ *             "security" = "is_granted('ROLE_USER')"
+ *         }
+ *     }
+ * )
  */
 class Recipe
 {
-    use Timestampable;
-    use HasUuid;
+    use Timestampable, HasUuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -34,23 +50,28 @@ class Recipe
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="recipes")
      * @ORM\JoinColumn(nullable=false)
+     * @ApiProperty(
+     *     writable=false
+     * )
      */
     private $author;
 
     /**
      * @ORM\OneToMany(targetEntity=RecipeComment::class, mappedBy="recipe", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $comments;
+    private $comments = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Like::class, mappedBy="recipe", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $likes;
+    private $likes = [];
 
     /**
      * @ORM\OneToMany(targetEntity=AssetQuantity::class, mappedBy="recipe")
      */
-    private $assetQuantities;
+    private $assetQuantities = [];
 
     public function __construct()
     {

@@ -9,18 +9,34 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Traits\Timestampable;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="users")
  * @ORM\HasLifecycleCallbacks
- * @ApiResource
+ * @ApiResource(
+ *     itemOperations = {
+ *         "get",
+ *         "put" = {
+ *             "security" = "object === user"
+ *         },
+ *         "delete" = {
+ *             "security" = "object === user"
+ *         }
+ *     },
+ *     collectionOperations = {
+ *         "get",
+ *         "post" = {
+ *             "security" = "is_granted('IS_ANONYMOUS')"
+ *         }
+ *     }
+ * )
  */
 class User implements UserInterface
 {
-    use Timestampable;
-    use HasUuid;
+    use Timestampable, HasUuid;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -29,12 +45,14 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @ApiProperty(writable = false)
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @ApiProperty(readable=false)
      */
     private $password;
 
@@ -46,7 +64,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $LastName;
+    private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -67,26 +85,30 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phone;
-
+    
     /**
      * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="author", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $recipes;
+    private $recipes = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Like::class, mappedBy="author", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $likes;
+    private $likes = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="follower", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $followeds;
+    private $followeds = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Follow::class, mappedBy="followed", orphanRemoval=true)
+     * @ApiProperty(writable = false)
      */
-    private $followers;
+    private $followers = [];
 
     public function __construct()
     {
@@ -181,12 +203,12 @@ class User implements UserInterface
 
     public function getLastName(): ?string
     {
-        return $this->LastName;
+        return $this->lastName;
     }
 
-    public function setLastName(string $LastName): self
+    public function setLastName(string $lastName): self
     {
-        $this->LastName = $LastName;
+        $this->lastName = $lastName;
 
         return $this;
     }
