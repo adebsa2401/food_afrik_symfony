@@ -69,7 +69,7 @@ class Recipe
     /**
      * @ORM\Column(type="boolean", options={"default" = true})
      */
-    private $commentable;
+    private $commentable = true;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="recipe", orphanRemoval=true)

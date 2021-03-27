@@ -29,3 +29,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\DataPersister\ShouldSetAuthorPersister:
+        arguments: ['@api_platform.doctrine.orm.data_persister']
+        tags: ['api_platform.data_persister']
+
+    App\DataPersister\UserDataPersister:
+        arguments: ['@api_platform.doctrine.orm.data_persister']
+        tags: ['api_platform.data_persister']

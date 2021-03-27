@@ -47,12 +47,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function getCredentials(Request $request)
     {
-        // User is allowed to get authenticated wieth either her username or email
+        $params = json_decode($request->getContent(), true);
+        // User is allowed to get authenticated with either her username or email
         // So we get either both using "identifier" key
         $credentials = [
-            'identifier' => $request->request->get('identifier'),
-            'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
+            'identifier' => $params['identifier'],
+            'password' => $params['password'],
+            'csrf_token' => $params['csrf_token'],
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -65,10 +66,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
-
+        
         foreach(self::IDENTIFIERS as $identifier) {
             $user = $this->entityManager->getRepository(User::class)->findOneBy([$identifier => $credentials['identifier']]);
             if($user) break;

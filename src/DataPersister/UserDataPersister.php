@@ -1,25 +1,23 @@
 <?php
 namespace App\DataPersister;
 
+use ApiPlatform\Core\DataPersister\ChainDataPersister;
+
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 final class UserDataPersister implements ContextAwareDataPersisterInterface {
     private $passwordEncoder;
-    private $em;
 
-    public function __construct(
-        UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $em
-    ) {
+    public function __construct(ContextAwareDataPersisterInterface $decorated, UserPasswordEncoderInterface $passwordEncoder) {
         $this->passwordEncoder = $passwordEncoder;
-        $this->em = $em;
+        $this->decorated = $decorated;
     }
 
-    public function supports($data, array $context=[]): bool {
-        return $data instanceof User;
+    public function supports($data, array $context = []): bool {
+        return $this->decorated->supports($data, $context) &&
+            $data instanceof User;
     }
 
     public function persist($data, array $context = []) {
@@ -28,14 +26,10 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface {
             $data->eraseCredentials();
         }
 
-        $this->em->persist($data);
-        $this->em->flush();
-
-        return $data;
+        return $this->decorated->persist($data, $context);
     }
 
     public function remove($data, array $context = []) {
-        $this->em->remove($data);
-        $this->em->flush();
+        $this->decorated->remove($data, $context);
     }
 }

@@ -20,7 +20,7 @@
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" required>
 
-    <input type="hidden" name="_csrf_token"
+    <input type="hidden" name="csrf_token"
            value="{{ csrf_token('authenticate') }}"
     >
 
